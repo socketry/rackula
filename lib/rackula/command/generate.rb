@@ -40,10 +40,23 @@ module Rackula
 				option '--concurrency', "The concurrency of the server container", default: 2
 			end
 			
-			def run(root)
-				container_class = Async::Container::Threaded
+			def copy_and_fetch(port, root)
+				output_path = File.join(root, @options[:output_path])
 				
-				endpoint = Async::IO::Endpoint.tcp("localhost", 9298, reuse_port: true)
+				# Delete any existing stuff:
+				FileUtils.rm_rf(output_path)
+				
+				# Copy all public assets:
+				Dir.glob(File.join(root, @options[:public], '*')).each do |path|
+					FileUtils.cp_r(path, output_path)
+				end
+				
+				# Generate HTML pages:
+				system!("wget", "--mirror", "--recursive", "--continue", "--convert-links", "--adjust-extension", "--no-host-directories", "--directory-prefix", output_path.to_s, "http://localhost:#{port}")
+			end
+			
+			def serve(endpoint, root)
+				container_class = Async::Container::Threaded
 				
 				app, options = Rack::Builder.parse_file(File.join(root, @options[:config]))
 				
@@ -54,29 +67,29 @@ module Rackula
 					
 					server.run
 				end
+			end
+			
+			def run(address, root)
+				endpoint = Async::IO::Endpoint.tcp("localhost", address.ip_port, reuse_port: true)
 				
-				return container, endpoint
+				puts "Setting up container to serve site..."
+				container = serve(endpoint, root)
+				
+				puts "Copy and fetch site to static..."
+				copy_and_fetch(address.ip_port, root)
+			ensure
+				container.stop if container
 			end
 			
 			def invoke(parent)
-				container, endpoint = run(parent.root)
-				
-				output_path = File.join(parent.root, @options[:output_path])
-				
-				# Delete any existing stuff:
-				FileUtils.rm_rf(output_path)
-				
-				# Copy all public assets:
-				Dir.glob(File.join(parent.root, @options[:public], '*')).each do |path|
-					FileUtils.cp_r(path, output_path)
+				Async::Reactor.run do
+					endpoint = Async::IO::Endpoint.tcp("localhost", 0, reuse_port: true)
+					
+					# We bind to a socket to generate a temporary port:
+					endpoint.bind do |socket|
+						run(socket.local_address, parent.root)
+					end
 				end
-				
-				address = endpoint.address
-				
-				# Generate HTML pages:
-				system!("wget", "--mirror", "--recursive", "--continue", "--convert-links", "--adjust-extension", "--no-host-directories", "--directory-prefix", output_path.to_s, "http://localhost:#{address.ip_port}")
-				
-				container.stop
 			end
 		end
 	end
