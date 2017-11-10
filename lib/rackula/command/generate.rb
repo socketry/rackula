@@ -20,6 +20,8 @@
 
 require 'samovar'
 
+require 'pathname'
+
 require 'falcon/server'
 require 'async/io'
 require 'async/container'
@@ -43,12 +45,12 @@ module Rackula
 			end
 			
 			def copy_and_fetch(port, root)
-				output_path = File.join(root, @options[:output_path])
+				output_path = root + @options[:output_path]
 				
-				if File.exist? output_path
+				if output_path.exist?
 					if @options[:force]
 						# Delete any existing stuff:
-						FileUtils.rm_rf(output_path)
+						FileUtils.rm_rf(output_path.to_s)
 					else
 						# puts "Failing due to error..."
 						raise Samovar::Failure.new("Output path already exists!")
@@ -56,7 +58,8 @@ module Rackula
 				end
 				
 				# Copy all public assets:
-				Dir.glob(File.join(root, @options[:public], '*')).each do |path|
+				asset_pattern = root + @options[:public] + '*'
+				Dir.glob(asset_pattern.to_s).each do |path|
 					FileUtils.cp_r(path, output_path)
 				end
 				
@@ -67,7 +70,8 @@ module Rackula
 			def serve(endpoint, root)
 				container_class = Async::Container::Threaded
 				
-				app, options = Rack::Builder.parse_file(File.join(root, @options[:config]))
+				config_path = root + @options[:config]
+				app, options = Rack::Builder.parse_file(config_path.to_s)
 				
 				container = container_class.new(concurrency: @options[:concurrency]) do
 					server = Falcon::Server.new(app, [
@@ -96,7 +100,7 @@ module Rackula
 					
 					# We bind to a socket to generate a temporary port:
 					endpoint.bind do |socket|
-						run(socket.local_address, parent.root)
+						run(socket.local_address, Pathname.new(parent.root))
 					end
 				end
 			end

@@ -2,6 +2,9 @@
 
 Rackula will immortalize your rackup web app by generating a static copy. It can be used to generate a static site from any rack-compatible middleware (e.g. rails, sinatra, utopia).
 
+[![Build Status](https://secure.travis-ci.org/socketry/rackula.svg)](http://travis-ci.org/socketry/rackula)
+[![Coverage Status](https://coveralls.io/repos/socketry/rackula/badge.svg)](https://coveralls.io/r/socketry/rackula)
+
 ## Installation
 
 Install the gem:
