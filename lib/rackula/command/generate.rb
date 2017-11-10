@@ -37,14 +37,23 @@ module Rackula
 				option '-p/--public <path>', "The public path to copy initial files from", default: 'public'
 				option '-o/--output-path <path>', "The output path to save static site", default: 'static'
 				
+				option '-f/--force', "If the output path exists, delete it.", default: false
+				
 				option '--concurrency', "The concurrency of the server container", default: 4
 			end
 			
 			def copy_and_fetch(port, root)
 				output_path = File.join(root, @options[:output_path])
 				
-				# Delete any existing stuff:
-				FileUtils.rm_rf(output_path)
+				if File.exist? output_path
+					if @options[:force]
+						# Delete any existing stuff:
+						FileUtils.rm_rf(output_path)
+					else
+						# puts "Failing due to error..."
+						raise Samovar::Failure.new("Output path already exists!")
+					end
+				end
 				
 				# Copy all public assets:
 				Dir.glob(File.join(root, @options[:public], '*')).each do |path|
@@ -72,10 +81,10 @@ module Rackula
 			def run(address, root)
 				endpoint = Async::IO::Endpoint.tcp("localhost", address.ip_port, reuse_port: true)
 				
-				puts "Setting up container to serve site..."
+				puts "Setting up container to serve site on port #{address.ip_port}..."
 				container = serve(endpoint, root)
 				
-				puts "Copy and fetch site to static..."
+				# puts "Copy and fetch site to static..."
 				copy_and_fetch(address.ip_port, root)
 			ensure
 				container.stop if container

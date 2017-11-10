@@ -22,4 +22,9 @@
 
 require 'rackula/command'
 
-Rackula::Command.parse(ARGV).invoke
+begin
+	Rackula::Command.parse(ARGV).invoke
+rescue Samovar::Failure
+	puts "Failed: #{$!.message}"
+	exit 1
+end

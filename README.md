@@ -1,6 +1,6 @@
 # Rackula
 
-Rackula will immortalize your rackup web app by generating a static copy. It can be used to generate a static site from any CMS or rack-compatible middleware (e.g. rails).
+Rackula will immortalize your rackup web app by generating a static copy. It can be used to generate a static site from any rack-compatible middleware (e.g. rails, sinatra, utopia).
 
 ## Installation
 
@@ -8,11 +8,13 @@ Install the gem:
 
 	$ gem install rackula
 
+Ensure that `wget` is installed and available.
+
 ## Usage
 
 ### Rack Applications
 
-In the root directory, simply run `rackula`. It will generate a static site in `static`. If that path already exists, it will be deleted. For more details about how to change the default behavior, run `rackula --help`.
+In the root directory, simply run `rackula`. It will generate a static site in `static`. For more details about how to change the default behavior, run `rackula --help`.
 
 ### Rails Applications
 
