@@ -56,11 +56,14 @@ module Rackula
 						raise Samovar::Failure.new("Output path already exists!")
 					end
 				end
+
+				# Create output directory
+				Dir.mkdir(output_path)
 				
 				# Copy all public assets:
 				asset_pattern = root + @options[:public] + '*'
 				Dir.glob(asset_pattern.to_s).each do |path|
-					FileUtils.cp_r(path, output_path)
+					FileUtils.cp_r(path, File.join(output_path, "."))
 				end
 				
 				# Generate HTML pages:
