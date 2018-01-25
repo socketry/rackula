@@ -27,5 +27,6 @@ RSpec.describe Rackula do
 		
 		expect(File).to be_exist(File.join(output_path, "index.html"))
 		expect(File).to be_exist(File.join(output_path, "another.html"))
+		expect(File).to be_exist(File.join(output_path, "document.txt"))
 	end
 end
