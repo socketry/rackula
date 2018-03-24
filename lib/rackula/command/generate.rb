@@ -98,6 +98,9 @@ module Rackula
 			end
 			
 			def invoke(parent)
+				# We set the default RACK_ENV to static unless it was already set to something.
+				ENV['RACK_ENV'] ||= 'static'
+				
 				Async::Reactor.run do
 					endpoint = Async::IO::Endpoint.tcp("localhost", 0, reuse_port: true)
 					
