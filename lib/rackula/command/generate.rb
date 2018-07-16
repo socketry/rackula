@@ -74,13 +74,12 @@ module Rackula
 				container_class = Async::Container::Threaded
 				
 				config_path = root + @options[:config]
-				app, options = Rack::Builder.parse_file(config_path.to_s)
+				rack_app, options = Rack::Builder.parse_file(config_path.to_s)
+				
+				app = ::Falcon::Server.middleware(rack_app, verbose: @options[:verbose])
+				server = ::Falcon::Server.new(app, endpoint)
 				
 				container = container_class.new(concurrency: @options[:concurrency]) do
-					server = Falcon::Server.new(app, [
-						endpoint
-					])
-					
 					server.run
 				end
 			end
