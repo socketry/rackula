@@ -21,12 +21,13 @@
 require 'samovar'
 
 require 'pathname'
+require 'rack'
 
 require 'falcon/server'
+
 require 'async/io'
 require 'async/container'
-
-require 'falcon'
+require 'async/http'
 
 module Rackula
 	module Command
@@ -85,7 +86,7 @@ module Rackula
 			end
 			
 			def run(address, root)
-				endpoint = Async::IO::Endpoint.tcp("localhost", address.ip_port, reuse_port: true)
+				endpoint = Async::HTTP::URLEndpoint.parse("http://localhost", port: address.ip_port, reuse_port: true)
 				
 				puts "Setting up container to serve site on port #{address.ip_port}..."
 				container = serve(endpoint, root)
