@@ -18,6 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+require 'rackula/command'
+
 RSpec.describe Rackula do
 	let(:root) {File.join(__dir__, "site")}
 	let(:output_path) {File.join(__dir__, "static")}

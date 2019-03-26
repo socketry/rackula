@@ -1,15 +1,17 @@
 language: ruby
-sudo: false
 cache: bundler
-rvm:
-  - 2.3
-  - 2.4
-  - 2.5
-  - 2.6
-  - jruby-head
-  - ruby-head
-env: COVERAGE=true
+
 matrix:
+  include:
+    - rvm: 2.3
+    - rvm: 2.4
+    - rvm: 2.5
+    - rvm: 2.6
+      env: COVERAGE=BriefSummary,Coveralls
+    - rvm: ruby-head
+    - rvm: jruby-head
+    - rvm: truffleruby
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
+    - rvm: truffleruby
