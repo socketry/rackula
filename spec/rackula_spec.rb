@@ -23,7 +23,7 @@ RSpec.describe Rackula do
 	let(:output_path) {File.join(__dir__, "static")}
 	
 	it "can generate copy of site" do
-		Rackula::Command::Top["--root", root, "generate", "--force", "--output-path", output_path].invoke
+		Rackula::Command::Top["--root", root, "generate", "--force", "--output-path", output_path].call
 		
 		expect(File).to be_exist(File.join(output_path, "index.html"))
 		expect(File).to be_exist(File.join(output_path, "another.html"))

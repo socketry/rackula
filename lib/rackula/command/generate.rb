@@ -36,13 +36,13 @@ module Rackula
 			self.description = "Start a local server and generate a static version of a site."
 			
 			options do
-				option '-c/--config <path>', "Rackup configuration file to load", default: 'config.ru'
-				option '-p/--public <path>', "The public path to copy initial files from", default: 'public'
-				option '-o/--output-path <path>', "The output path to save static site", default: 'static'
+				option '-c/--config <path>', "Rackup configuration file to load.", default: 'config.ru'
+				option '-p/--public <path>', "The public path to copy initial files from.", default: 'public'
+				option '-o/--output-path <path>', "The output path to save static site.", default: 'static'
 				
 				option '-f/--force', "If the output path exists, delete it.", default: false
 				
-				option '--concurrency', "The concurrency of the server container", default: 4
+				option '--count', "The number of server instances to spawn.", default: 4
 			end
 			
 			def copy_and_fetch(port, root)
@@ -68,11 +68,11 @@ module Rackula
 				end
 				
 				# Generate HTML pages:
-				system!("wget", "--mirror", "--recursive", "--continue", "--convert-links", "--adjust-extension", "--no-host-directories", "--directory-prefix", output_path.to_s, "http://localhost:#{port}")
+				system("wget", "--mirror", "--recursive", "--continue", "--convert-links", "--adjust-extension", "--no-host-directories", "--directory-prefix", output_path.to_s, "http://localhost:#{port}")
 			end
 			
 			def serve(endpoint, root)
-				container_class = Async::Container::Threaded
+				container = Async::Container::Threaded.new
 				
 				config_path = root + @options[:config]
 				rack_app, options = Rack::Builder.parse_file(config_path.to_s)
@@ -80,7 +80,7 @@ module Rackula
 				app = ::Falcon::Server.middleware(rack_app, verbose: @options[:verbose])
 				server = ::Falcon::Server.new(app, endpoint)
 				
-				container = container_class.new(concurrency: @options[:concurrency]) do
+				container.run(count: @options[:count]) do
 					server.run
 				end
 			end
@@ -94,10 +94,10 @@ module Rackula
 				# puts "Copy and fetch site to static..."
 				copy_and_fetch(address.ip_port, root)
 			ensure
-				container.stop if container
+				container&.stop
 			end
 			
-			def invoke(parent)
+			def call
 				# We set the default RACK_ENV to static unless it was already set to something.
 				ENV['RACK_ENV'] ||= 'static'
 				
