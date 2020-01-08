@@ -8,6 +8,7 @@ matrix:
     - rvm: 2.5
     - rvm: 2.6
       env: COVERAGE=BriefSummary,Coveralls
+    - rvm: 2.7      
     - rvm: ruby-head
     - rvm: jruby-head
     - rvm: truffleruby
