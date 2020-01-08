@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
 	spec.require_paths = ["lib"]
 
 	spec.add_dependency "samovar", "~> 2.1"
-	spec.add_dependency "falcon", "~> 0.27"
+	spec.add_dependency "falcon", "~> 0.34"
 
 	spec.add_development_dependency "covered"
 	spec.add_development_dependency "bundler"
