@@ -29,6 +29,8 @@ require 'async/io'
 require 'async/container'
 require 'async/http'
 
+require 'variant'
+
 module Rackula
 	module Command
 		# Server setup commands.
@@ -98,8 +100,7 @@ module Rackula
 			end
 			
 			def call
-				# We set the default RACK_ENV to static unless it was already set to something.
-				ENV['RACK_ENV'] ||= 'static'
+				Variant.force!('static')
 				
 				Async::Reactor.run do
 					endpoint = Async::IO::Endpoint.tcp("localhost", 0, reuse_port: true)
