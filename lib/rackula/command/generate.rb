@@ -43,8 +43,6 @@ module Rackula
 				option '-o/--output-path <path>', "The output path to save static site.", default: 'static'
 				
 				option '-f/--force', "If the output path exists, delete it.", default: false
-				
-				option '--count', "The number of server instances to spawn.", default: 4
 			end
 			
 			def copy_and_fetch(port, root)
@@ -59,7 +57,7 @@ module Rackula
 						raise Samovar::Failure.new("Output path already exists!")
 					end
 				end
-
+				
 				# Create output directory
 				Dir.mkdir(output_path)
 				
@@ -74,23 +72,31 @@ module Rackula
 			end
 			
 			def serve(endpoint, root)
-				container = Async::Container::Threaded.new
+				container = Async::Container.new
 				
 				config_path = root + @options[:config]
-				rack_app, options = Rack::Builder.parse_file(config_path.to_s)
 				
-				app = ::Falcon::Server.middleware(rack_app, verbose: @options[:verbose])
-				server = ::Falcon::Server.new(app, endpoint)
-				
-				container.run(count: @options[:count]) do
-					server.run
+				container.run do |instance|
+					Async do
+						rack_app, _ = Rack::Builder.parse_file(config_path.to_s)
+						app = ::Falcon::Server.middleware(rack_app, verbose: @options[:verbose])
+						server = ::Falcon::Server.new(app, endpoint)
+						
+						instance.ready!
+						
+						server.run
+					end
 				end
+				
+				container.wait_until_ready
+				
+				return container
 			end
 			
 			def run(address, root)
 				endpoint = Async::HTTP::Endpoint.parse("http://localhost", port: address.ip_port, reuse_port: true)
 				
-				puts "Setting up container to serve site on port #{address.ip_port}..."
+				Async.logger.info(self) {"Setting up container to serve site on port #{address.ip_port}..."}
 				container = serve(endpoint, root)
 				
 				# puts "Copy and fetch site to static..."
@@ -102,13 +108,13 @@ module Rackula
 			def call
 				Variant.force!('static')
 				
-				Async::Reactor.run do
+				Async do
 					endpoint = Async::IO::Endpoint.tcp("localhost", 0, reuse_port: true)
 					
 					# We bind to a socket to generate a temporary port:
-					endpoint.bind do |socket|
-						run(socket.local_address, Pathname.new(parent.root))
-					end
+					socket = endpoint.each.first.bind
+					
+					run(socket.local_address, Pathname.new(parent.root))
 				end
 			end
 		end
