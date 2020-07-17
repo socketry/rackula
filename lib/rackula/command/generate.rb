@@ -108,14 +108,12 @@ module Rackula
 			def call
 				Variant.force!('static')
 				
-				Async do
-					endpoint = Async::IO::Endpoint.tcp("localhost", 0, reuse_port: true)
-					
-					# We bind to a socket to generate a temporary port:
-					socket = endpoint.each.first.bind
-					
-					run(socket.local_address, Pathname.new(parent.root))
-				end
+				endpoint = Async::IO::Endpoint.tcp("localhost", 0, reuse_port: true)
+				
+				# We bind to a socket to generate a temporary port:
+				socket = Sync{endpoint.each.first.bind}
+				
+				run(socket.local_address, Pathname.new(parent.root))
 			end
 		end
 	end
