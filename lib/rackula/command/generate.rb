@@ -21,6 +21,7 @@
 require 'samovar'
 
 require 'pathname'
+require 'fileutils'
 require 'rack'
 
 require 'falcon/server'
