@@ -17,6 +17,7 @@ jobs:
           - 2.5
           - 2.6
           - 2.7
+          - 3.0
         
         experimental: [false]
         env: [""]
@@ -25,26 +26,19 @@ jobs:
           - os: ubuntu
             ruby: truffleruby
             experimental: true
-            env: JRUBY_OPTS="--debug -X+O"
           - os: ubuntu
             ruby: jruby
             experimental: true
           - os: ubuntu
             ruby: head
             experimental: true
-          - os: ubuntu
-            ruby: 2.6
-            experimental: false
-            env: COVERAGE=PartialSummary,Coveralls
     
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{matrix.ruby}}
-    
-    - name: Install dependencies
-      run: ${{matrix.env}} bundle install
+        bundler-cache: true
     
     - name: Installing packages (ubuntu)
       if: matrix.os == 'ubuntu'

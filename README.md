@@ -2,14 +2,13 @@
 
 Rackula will immortalize your rackup web app by generating a static copy. It can be used to generate a static site from any rack-compatible middleware (e.g. rails, sinatra, utopia).
 
-[![Build Status](https://travis-ci.com/socketry/rackula.svg)](https://travis-ci.com/socketry/rackula)
-[![Coverage Status](https://coveralls.io/repos/socketry/rackula/badge.svg)](https://coveralls.io/r/socketry/rackula)
+[![Development Status](https://github.com/socketry/rackula/workflows/Development/badge.svg)](https://github.com/socketry/rackula/actions?workflow=Development)
 
 ## Installation
 
 Install the gem:
 
-	$ gem install rackula
+    $ gem install rackula
 
 Ensure that `wget` is installed and available.
 
@@ -23,7 +22,7 @@ In the root directory, simply run `rackula`. It will generate a static site in `
 
 Add a `config.ru` file to your rails app and follow the above instructions.
 
-```ruby
+``` ruby
 # config.ru for rails app
 require_relative 'config/environment'
 run Rails.application
@@ -31,11 +30,11 @@ run Rails.application
 
 ## Contributing
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+1.  Fork it
+2.  Create your feature branch (`git checkout -b my-new-feature`)
+3.  Commit your changes (`git commit -am 'Add some feature'`)
+4.  Push to the branch (`git push origin my-new-feature`)
+5.  Create new Pull Request
 
 ## License
 
