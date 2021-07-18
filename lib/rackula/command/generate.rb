@@ -97,7 +97,7 @@ module Rackula
 			def run(address, root)
 				endpoint = Async::HTTP::Endpoint.parse("http://localhost", port: address.ip_port, reuse_port: true)
 				
-				Async.logger.info(self) {"Setting up container to serve site on port #{address.ip_port}..."}
+				Console.logger.info(self) {"Setting up container to serve site on port #{address.ip_port}..."}
 				container = serve(endpoint, root)
 				
 				# puts "Copy and fetch site to static..."
