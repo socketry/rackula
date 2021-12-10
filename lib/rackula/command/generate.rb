@@ -69,7 +69,9 @@ module Rackula
 				end
 				
 				# Generate HTML pages:
-				system("wget", "--mirror", "--recursive", "--continue", "--convert-links", "--adjust-extension", "--no-host-directories", "--directory-prefix", output_path.to_s, "http://localhost:#{port}")
+				unless system("wget", "--mirror", "--recursive", "--continue", "--convert-links", "--adjust-extension", "--no-host-directories", "--directory-prefix", output_path.to_s, "http://localhost:#{port}")
+					raise "The wget command failed!"
+				end
 			end
 			
 			def serve(endpoint, root)
