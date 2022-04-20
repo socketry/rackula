@@ -31,4 +31,17 @@ RSpec.describe Rackula do
 		expect(File).to be_exist(File.join(output_path, "another.html"))
 		expect(File).to be_exist(File.join(output_path, "document.txt"))
 	end
+	
+	it "can generate copy of site into existing directory" do
+		FileUtils.mkdir_p(output_path)
+		FileUtils.touch(File.join(output_path, "existing.txt"))
+		
+		Rackula::Command::Top["--root", root, "generate", "--output-path", output_path].call
+		
+		expect(File).to be_exist(File.join(output_path, "index.html"))
+		expect(File).to be_exist(File.join(output_path, "another.html"))
+		expect(File).to be_exist(File.join(output_path, "document.txt"))
+		
+		expect(File).to be_exist(File.join(output_path, "existing.txt"))
+	end
 end

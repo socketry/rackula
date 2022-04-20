@@ -57,7 +57,7 @@ module Rackula
 				end
 				
 				# Create output directory
-				Dir.mkdir(output_path)
+				FileUtils.mkdir_p(output_path)
 				
 				# Copy all public assets:
 				asset_pattern = root + @options[:public] + '*'
