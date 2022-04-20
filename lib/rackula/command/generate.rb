@@ -53,9 +53,6 @@ module Rackula
 					if @options[:force]
 						# Delete any existing stuff:
 						FileUtils.rm_rf(output_path.to_s)
-					else
-						# puts "Failing due to error..."
-						raise Samovar::Failure.new("Output path already exists!")
 					end
 				end
 				
