@@ -102,7 +102,7 @@ module Rackula
 				Console.logger.info(self) {"Setting up container to serve site on port #{address.ip_port}..."}
 				container = serve(endpoint, root)
 				
-				# puts "Copy and fetch site to static..."
+				Console.logger.info(self) {"Copy and fetch site to static..."}
 				copy_and_fetch(address.ip_port, root)
 			ensure
 				container&.stop
