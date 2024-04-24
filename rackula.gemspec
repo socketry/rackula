@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
 	
 	spec.required_ruby_version = ">= 3.1"
 	
-	spec.add_dependency "falcon", "~> 0.34"
+	spec.add_dependency "falcon", "~> 0.46"
 	spec.add_dependency "samovar", "~> 2.1"
 	spec.add_dependency "variant"
 end
