@@ -1,22 +1,8 @@
-# Copyright, 2017, by Samuel G. D. Williams. <http://www.codeotaku.com>
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+# frozen_string_literal: true
+
+# Released under the MIT License.
+# Copyright, 2017-2024, by Samuel Williams.
+# Copyright, 2018, by Dave Wilkinson.
 
 require 'samovar'
 
@@ -26,7 +12,7 @@ require 'rack'
 
 require 'falcon/server'
 
-require 'async/io'
+require 'io/endpoint'
 require 'async/container'
 require 'async/http'
 
@@ -47,9 +33,9 @@ module Rackula
 			end
 			
 			def copy_and_fetch(port, root)
-				output_path = root + @options[:output_path]
+				output_path = File.expand_path(@options[:output_path], root)
 				
-				if output_path.exist?
+				if File.exist?(output_path)
 					if @options[:force]
 						# Delete any existing stuff:
 						FileUtils.rm_rf(output_path.to_s)
@@ -108,10 +94,10 @@ module Rackula
 			def call
 				Variant.force!('static')
 				
-				endpoint = Async::IO::Endpoint.tcp("localhost", 0, reuse_port: true)
+				endpoint = ::IO::Endpoint.tcp("localhost", 0, reuse_port: true)
 				
 				# We bind to a socket to generate a temporary port:
-				socket = Sync{endpoint.each.first.bind}
+				socket = Sync{endpoint.bind.first}
 				
 				run(socket.local_address, Pathname.new(parent.root))
 			end

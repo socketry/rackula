@@ -7,21 +7,25 @@ Gem::Specification.new do |spec|
 	spec.version = Rackula::VERSION
 	
 	spec.summary = "Generate a static site from any rackup compatible application."
-	spec.authors = ["Samuel Williams"]
+	spec.authors = ["Samuel Williams", "Dave Wilkinson", "Olle Jonsson"]
 	spec.license = "MIT"
+	
+	spec.cert_chain  = ['release.cert']
+	spec.signing_key = File.expand_path('~/.gem/release.pem')
 	
 	spec.homepage = "https://github.com/socketry/rackula"
 	
-	spec.files = Dir.glob('{bin,lib}/**/*', File::FNM_DOTMATCH, base: __dir__)
+	spec.metadata = {
+		"source_code_uri" => "https://github.com/socketry/rackula.git",
+	}
+	
+	spec.files = Dir.glob(['{bin,lib}/**/*', '*.md'], File::FNM_DOTMATCH, base: __dir__)
 	
 	spec.executables = ["rackula"]
+	
+	spec.required_ruby_version = ">= 3.1"
 	
 	spec.add_dependency "falcon", "~> 0.34"
 	spec.add_dependency "samovar", "~> 2.1"
 	spec.add_dependency "variant"
-	
-	spec.add_development_dependency "bake-bundler"
-	spec.add_development_dependency "bundler"
-	spec.add_development_dependency "covered"
-	spec.add_development_dependency "rspec", "~> 3.0"
 end
