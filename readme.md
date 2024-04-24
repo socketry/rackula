@@ -4,29 +4,11 @@ Rackula will immortalize your rackup web app by generating a static copy. It can
 
 [![Development Status](https://github.com/socketry/rackula/workflows/Test/badge.svg)](https://github.com/socketry/rackula/actions?workflow=Test)
 
-## Installation
-
-Install the gem:
-
-    $ gem install rackula
-
-Ensure that `wget` is installed and available.
-
 ## Usage
 
-### Rack Applications
+Please see the [project documentation](https://socketry.github.io/rackula/) for more details.
 
-In the root directory, simply run `rackula`. It will generate a static site in `static`. For more details about how to change the default behavior, run `rackula --help`.
-
-### Rails Applications
-
-Add a `config.ru` file to your rails app and follow the above instructions.
-
-``` ruby
-# config.ru for rails app
-require_relative 'config/environment'
-run Rails.application
-```
+  - [Getting Started](https://socketry.github.io/rackula/guides/getting-started/index) - This guide will show you how to use the `rakula` gem to create a simple static website.
 
 ## Contributing
 
