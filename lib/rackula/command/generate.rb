@@ -12,7 +12,7 @@ require 'rack'
 
 require 'falcon/server'
 
-require 'io/endpoint'
+require 'io/endpoint/host_endpoint'
 require 'async/container'
 require 'async/http'
 
