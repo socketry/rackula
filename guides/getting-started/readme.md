@@ -7,7 +7,7 @@ This guide will show you how to use the `rakula` gem to create a simple static w
 Add the gem to your project:
 
 ~~~ bash
-$ bundle add io-event
+$ bundle add rackula
 ~~~
 
 and make sure `wget` is also installed, using your system package manager.
