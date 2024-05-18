@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide will show you how to use the `rakula` gem to create a simple static website.
+This guide will show you how to use the `rackula` gem to create a simple static website.
 
 ## Installation
 
