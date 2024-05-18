@@ -8,7 +8,7 @@ Rackula will immortalize your rackup web app by generating a static copy. It can
 
 Please see the [project documentation](https://socketry.github.io/rackula/) for more details.
 
-  - [Getting Started](https://socketry.github.io/rackula/guides/getting-started/index) - This guide will show you how to use the `rakula` gem to create a simple static website.
+  - [Getting Started](https://socketry.github.io/rackula/guides/getting-started/index) - This guide will show you how to use the `rackula` gem to create a simple static website.
 
 ## Contributing
 
