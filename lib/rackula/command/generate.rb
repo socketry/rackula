@@ -63,7 +63,7 @@ module Rackula
 				config_path = root + @options[:config]
 				
 				container.run do |instance|
-					Async do
+					Sync do
 						rack_app, _ = Rack::Builder.parse_file(config_path.to_s)
 						app = ::Falcon::Server.middleware(rack_app, verbose: @options[:verbose])
 						server = ::Falcon::Server.new(app, endpoint)
@@ -79,8 +79,12 @@ module Rackula
 				return container
 			end
 			
-			def run(address, root)
-				endpoint = Async::HTTP::Endpoint.parse("http://localhost", port: address.ip_port, reuse_port: true)
+			def run(bound_endpoint, root)
+				# We need to determine the actual port we are bound to:
+				local_addresses = bound_endpoint.sockets.map(&:local_address)
+				address = local_addresses.first
+				
+				endpoint = Async::HTTP::Endpoint.parse("http://localhost", bound_endpoint)
 				
 				Console.logger.info(self) {"Setting up container to serve site on port #{address.ip_port}..."}
 				container = serve(endpoint, root)
@@ -96,10 +100,13 @@ module Rackula
 				
 				endpoint = ::IO::Endpoint.tcp("localhost", 0, reuse_port: true)
 				
-				# We bind to a socket to generate a temporary port:
-				socket = Sync{endpoint.bind.first}
-				
-				run(socket.local_address, Pathname.new(parent.root))
+				begin
+					bound_endpoint = endpoint.bound
+					
+					run(bound_endpoint, Pathname.new(parent.root))
+				ensure
+					bound_endpoint&.close
+				end
 			end
 		end
 	end
