@@ -4,5 +4,5 @@
 # Copyright, 2017-2024, by Samuel Williams.
 
 module Rackula
-	VERSION = "1.4.0"
+	VERSION = "1.4.1"
 end
